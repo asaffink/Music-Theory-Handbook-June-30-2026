@@ -218,7 +218,7 @@
 <body>
   <main class="app">
     <div class="app-header">
-      <a class="back-btn" href="music-theory-handbook.html">← Menu</a>
+      <a class="back-btn" id="menu-back" href="music-theory-handbook.html">← Menu</a>
       <h1>Tendency Tones</h1>
       <span style="width: 72px;"></span>
     </div>
@@ -914,6 +914,23 @@
     HandbookMidi.subscribe(handleMidiMessage);
     window.addEventListener("resize", updateView);
     updateView();
+
+    /** GitHub Pages often uses index.html; locally it may be music-theory-handbook.html */
+    (function resolveMenuBackLink() {
+      const link = document.getElementById("menu-back");
+      if (!link || location.protocol === "file:") return;
+      (async function () {
+        for (const name of ["index.html", "music-theory-handbook.html"]) {
+          try {
+            const r = await fetch(name, { method: "HEAD" });
+            if (r.ok) {
+              link.href = name;
+              return;
+            }
+          } catch (_) {}
+        }
+      })();
+    })();
   </script>
 </body>
 </html>
