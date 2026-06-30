@@ -8,20 +8,8 @@
     rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Noto+Music&display=swap"
   />
-  <link rel="stylesheet" href="handbook-responsive.css?v=20260630" />
+  <link rel="stylesheet" href="handbook-responsive.css?v=20260701" />
   <style>
-    /* Safeguard: app must stay visible on phones (overrides stale cached CSS) */
-    @media (hover: none) and (pointer: coarse) and (orientation: portrait) {
-      main.app {
-        display: block !important;
-        visibility: visible !important;
-      }
-
-      body.chords-active main.app {
-        display: flex !important;
-        flex-direction: column;
-      }
-    }
     :root {
       --accent-dim: #0ea5e9;
       --highlight-major: #fbbf24;
@@ -610,122 +598,122 @@
       }
     }
 
-    /* Mobile touch landscape: chords side-by-side, compact controls */
+    /* Phone landscape: chords — controls left, staff right */
+    body.chords-mobile-landscape {
+      overflow: hidden;
+    }
+
+    body.chords-mobile-landscape .app {
+      height: 100dvh;
+      max-height: 100dvh;
+      padding: 4px 8px;
+      overflow: hidden;
+    }
+
+    body.chords-mobile-landscape #viewChords {
+      flex: 1;
+      min-height: 0;
+      max-height: none;
+      overflow: hidden;
+    }
+
+    body.chords-mobile-landscape #viewChords .app-header {
+      flex-shrink: 0;
+      margin-bottom: 2px;
+    }
+
+    body.chords-mobile-landscape #viewChords .app-header h1 {
+      font-size: 1rem;
+    }
+
+    body.chords-mobile-landscape .chord-layout {
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr) !important;
+      grid-template-rows: 1fr !important;
+      flex: 1;
+      min-height: 0;
+      gap: 8px;
+    }
+
+    body.chords-mobile-landscape .chord-controls {
+      max-height: none !important;
+      height: 100%;
+      overflow-y: auto;
+      gap: 6px;
+      padding-right: 2px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    body.chords-mobile-landscape .chord-group label {
+      font-size: 0.68rem;
+      margin-bottom: 2px;
+    }
+
+    body.chords-mobile-landscape .chord-group-hint {
+      display: none;
+    }
+
+    body.chords-mobile-landscape .chord-root-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 4px;
+    }
+
+    body.chords-mobile-landscape .chord-option-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+    }
+
+    body.chords-mobile-landscape .chord-option-grid-ext {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.chords-mobile-landscape .chord-opt,
+    body.chords-mobile-landscape .chord-opt-root,
+    body.chords-mobile-landscape .chord-opt-lg {
+      min-height: 32px !important;
+      padding: 4px 3px;
+      font-size: 0.78rem;
+    }
+
+    body.chords-mobile-landscape .chord-option-grid .chord-opt-lg {
+      font-size: 0.72rem;
+      line-height: 1.1;
+      padding: 4px 2px;
+    }
+
+    body.chords-mobile-landscape .chord-staff-panel {
+      padding: 6px 8px;
+      min-height: 0;
+      height: 100%;
+    }
+
+    body.chords-mobile-landscape .chord-symbol-display {
+      font-size: 1rem;
+      margin-bottom: 2px;
+      min-height: 1em;
+    }
+
+    body.chords-mobile-landscape .chord-staff-mount {
+      flex: 1;
+      min-height: 0;
+    }
+
+    body.chords-mobile-landscape .chord-staff-svg {
+      max-height: 100%;
+    }
+
+    body.chords-mobile-landscape .global-midi {
+      flex-shrink: 0;
+      margin-top: 2px;
+      padding-top: 4px;
+    }
+
+    body.chords-mobile-landscape .global-midi .aux {
+      min-height: 32px !important;
+      padding: 4px 8px;
+      font-size: 0.78rem;
+    }
+
     @media (hover: none) and (pointer: coarse) and (orientation: landscape) {
-      body.chords-active {
-        overflow: hidden;
-      }
-
-      body.chords-active .app {
-        height: 100dvh;
-        max-height: 100dvh;
-        padding: 4px 8px;
-        overflow: hidden;
-      }
-
-      body.chords-active #viewChords {
-        flex: 1;
-        min-height: 0;
-        max-height: none;
-        overflow: hidden;
-      }
-
-      #viewChords .app-header {
-        flex-shrink: 0;
-        margin-bottom: 2px;
-      }
-
-      #viewChords .app-header h1 {
-        font-size: 1rem;
-      }
-
-      .chord-layout {
-        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-        grid-template-rows: 1fr;
-        flex: 1;
-        min-height: 0;
-        gap: 8px;
-      }
-
-      .chord-controls {
-        max-height: none;
-        height: 100%;
-        overflow-y: auto;
-        gap: 6px;
-        padding-right: 2px;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .chord-group label {
-        font-size: 0.68rem;
-        margin-bottom: 2px;
-      }
-
-      .chord-group-hint {
-        display: none;
-      }
-
-      .chord-root-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 4px;
-      }
-
-      .chord-option-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 4px;
-      }
-
-      .chord-option-grid-ext {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .chord-opt,
-      .chord-opt-root,
-      .chord-opt-lg {
-        min-height: 32px !important;
-        padding: 4px 3px;
-        font-size: 0.78rem;
-      }
-
-      .chord-option-grid .chord-opt-lg {
-        font-size: 0.72rem;
-        line-height: 1.1;
-        padding: 4px 2px;
-      }
-
-      .chord-staff-panel {
-        padding: 6px 8px;
-        min-height: 0;
-        height: 100%;
-      }
-
-      .chord-symbol-display {
-        font-size: 1rem;
-        margin-bottom: 2px;
-        min-height: 1em;
-      }
-
-      .chord-staff-mount {
-        flex: 1;
-        min-height: 0;
-      }
-
-      .chord-staff-svg {
-        max-height: 100%;
-      }
-
-      body.chords-active .global-midi {
-        flex-shrink: 0;
-        margin-top: 2px;
-        padding-top: 4px;
-      }
-
-      body.chords-active .global-midi .aux {
-        min-height: 32px;
-        padding: 4px 8px;
-        font-size: 0.78rem;
-      }
-
       /* Circle: compact header row */
       #viewCircle .sub {
         display: none;
@@ -744,6 +732,21 @@
   </style>
 </head>
 <body>
+  <div id="chordsRotatePrompt" class="module-rotate-prompt" role="dialog" aria-modal="true" aria-labelledby="chords-rotate-title">
+    <button type="button" class="back-btn module-rotate-back" id="chordsRotateBack">← Menu</button>
+    <div class="module-rotate-prompt-body">
+      <div class="module-rotate-icon" aria-hidden="true">
+        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="16" y="8" width="40" height="56" rx="6" stroke="currentColor" stroke-width="3"/>
+          <path d="M36 20v16M28 28h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <path d="M52 14l4 4-4 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2 id="chords-rotate-title" class="module-rotate-title">Rotate for Chords</h2>
+      <p class="module-rotate-text">The chord builder works best in landscape. Turn your phone sideways to continue.</p>
+    </div>
+  </div>
+
   <main class="app">
     <!-- Main menu -->
     <section id="viewMenu">
@@ -1289,12 +1292,26 @@
       else clearFocus();
     }
 
+    function isPhoneLike() {
+      return Math.min(window.innerWidth, window.innerHeight) <= 520;
+    }
+
+    function updateMobileChordUi() {
+      const chordsActive = document.body.classList.contains("chords-active");
+      const portrait = window.innerHeight >= window.innerWidth;
+      const phone = isPhoneLike();
+
+      document.body.classList.toggle("chords-needs-rotate", chordsActive && phone && portrait);
+      document.body.classList.toggle("chords-mobile-landscape", chordsActive && phone && !portrait);
+    }
+
     function showMenu() {
       viewMenu.classList.remove("hidden");
       viewCircle.classList.add("hidden");
       viewChords.classList.add("hidden");
       document.body.classList.remove("chords-active");
       document.title = "Music Theory Handbook";
+      updateMobileChordUi();
     }
 
     function showCircle() {
@@ -1304,6 +1321,7 @@
       document.body.classList.remove("chords-active");
       document.title = "Music Theory Handbook — Circle of Fifths";
       setMode(activeMode);
+      updateMobileChordUi();
     }
 
     function showChords() {
@@ -1322,6 +1340,7 @@
         });
         window._chordsReady = true;
       }
+      updateMobileChordUi();
     }
 
     function midiPcToFocus(pc) {
@@ -1380,6 +1399,10 @@
       if (e.target.closest(".circle-segment")) return;
       clearFocus();
     });
+
+    document.getElementById("chordsRotateBack").addEventListener("click", showMenu);
+    window.addEventListener("resize", updateMobileChordUi);
+    window.addEventListener("orientationchange", () => setTimeout(updateMobileChordUi, 200));
 
     buildCircle();
     staffSidebar.classList.add("hidden");

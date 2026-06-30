@@ -168,18 +168,69 @@ button.back-btn {
   }
 }
 
-/* Phones in portrait: always show the app */
-@media (hover: none) and (pointer: coarse) and (orientation: portrait) {
-  main.app,
-  .app {
-    display: block !important;
-    visibility: visible !important;
-  }
+/* Chords module: rotate prompt on phone portrait only */
+.module-rotate-prompt {
+  display: none;
+}
 
-  body.chords-active main.app,
-  body.chords-active .app {
-    display: flex !important;
-    flex-direction: column;
+.module-rotate-prompt-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  flex: 1;
+  justify-content: center;
+  padding: 0 20px 40px;
+}
+
+.module-rotate-back {
+  align-self: flex-start;
+  margin: max(8px, env(safe-area-inset-top)) 0 0 max(8px, env(safe-area-inset-left));
+}
+
+.module-rotate-icon {
+  color: var(--accent);
+  line-height: 1;
+  animation: rotate-hint 2.4s ease-in-out infinite;
+}
+
+.module-rotate-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.module-rotate-text {
+  margin: 0;
+  max-width: 300px;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+@keyframes rotate-hint {
+  0%, 100% { transform: rotate(-90deg); }
+  50% { transform: rotate(0deg); }
+}
+
+body.chords-needs-rotate .module-rotate-prompt {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  flex-direction: column;
+  background: radial-gradient(circle at top, #1e293b, var(--bg));
+}
+
+body.chords-needs-rotate main.app {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .module-rotate-icon {
+    animation: none;
+    transform: rotate(-90deg);
   }
 }
 
