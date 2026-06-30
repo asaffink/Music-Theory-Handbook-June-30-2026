@@ -1,0 +1,970 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Music Theory Handbook — Tendency Tones</title>
+  <link rel="stylesheet" href="handbook-responsive.css" />
+  <style>
+    :root {
+      --white-key: #f8fafc;
+      --black-key: #0f172a;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    select {
+      background: #0b1220;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #0b1220;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:hover {
+      background: #111827;
+    }
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .keyboard-wrap {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .keyboard {
+      position: relative;
+      width: 560px;
+      height: 240px;
+      margin: 0 auto;
+      user-select: none;
+      transform-origin: top center;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .key {
+      position: absolute;
+      border: 1px solid #1f2937;
+      border-radius: 0 0 8px 8px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 8px;
+      transition: background 120ms ease, box-shadow 120ms ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .key .key-label {
+      display: block;
+      font-size: 0.95rem;
+      line-height: 1.15;
+      transition: color 120ms ease, font-size 120ms ease, opacity 120ms ease;
+    }
+
+    .key.white .key-label {
+      color: #0f172a;
+    }
+
+    .key.black .key-label {
+      color: #f8fafc;
+    }
+
+    /* Chromatic (outside scale): only the text is softer — key chrome unchanged */
+    .key .key-label.key-label-muted {
+      font-size: 0.78rem;
+      font-weight: 500;
+      opacity: 0.78;
+    }
+
+    .key.white .key-label.key-label-muted {
+      color: #64748b;
+    }
+
+    .key.black .key-label.key-label-muted {
+      color: #94a3b8;
+    }
+
+    .white {
+      width: 70px;
+      height: 230px;
+      background: var(--white-key);
+      z-index: 1;
+    }
+
+    .black {
+      width: 44px;
+      height: 145px;
+      background: var(--black-key);
+      z-index: 2;
+      border-color: #000;
+    }
+
+    .arrow-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .info {
+      margin-top: 12px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 1rem;
+      min-height: 24px;
+      line-height: 1.45;
+    }
+
+    .app-header {
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 600px) {
+      .sub {
+        font-size: 0.92rem;
+        margin-bottom: 12px;
+      }
+
+      .legend {
+        gap: 10px;
+        font-size: 0.92rem;
+      }
+
+      .controls {
+        gap: 8px;
+      }
+    }
+
+    /* Landscape phones: hide long intro, keep keyboard visible */
+    @media (max-height: 520px) and (orientation: landscape) {
+      .sub {
+        display: none;
+      }
+
+      .app-header {
+        margin-bottom: 0;
+      }
+
+      .controls {
+        margin-bottom: 8px;
+      }
+
+      .legend {
+        margin-bottom: 8px;
+        font-size: 0.85rem;
+        gap: 8px;
+      }
+
+      .info {
+        margin-top: 8px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Tablet: slightly larger keyboard area */
+    @media (min-width: 601px) and (max-width: 1024px) {
+      .keyboard-wrap {
+        max-width: 640px;
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="app-header">
+      <a class="back-btn" id="menu-back" href="music-theory-handbook.html">← Menu</a>
+      <h1>Tendency Tones</h1>
+      <span class="header-spacer" aria-hidden="true"></span>
+    </div>
+    <p class="sub">Each tendency pair has its own color: darker for tension, lighter for resolution. The lowest and highest keys on the strip are always natural (white) keys. Chromatic scale degrees use smaller, softer lettering only — the key caps look the same.</p>
+
+    <div class="controls">
+      <label for="keySelect">Key:</label>
+      <select id="keySelect"></select>
+      <label for="modeSelect">Mode:</label>
+      <select id="modeSelect">
+        <option value="major">Major</option>
+        <option value="minor">Minor</option>
+      </select>
+    </div>
+
+    <div class="legend">
+      <span><span class="dot" style="background: #16a34a"></span>4 -> 3</span>
+      <span><span class="dot" style="background: #2563eb"></span>7 -> 8</span>
+      <span><span class="dot" style="background: #d97706"></span>2 -> 1 / 3</span>
+      <span><span class="dot" style="background: #9333ea"></span>6 -> 5</span>
+    </div>
+
+    <div class="keyboard-wrap">
+      <div id="keyboard" class="keyboard">
+        <svg id="arrowLayer" class="arrow-layer" viewBox="0 0 560 240" preserveAspectRatio="xMinYMin meet">
+          <defs>
+            <marker id="arrowheadBlack" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#111111"></polygon>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    </div>
+
+    <p id="info" class="info"></p>
+
+    <div class="global-midi" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); flex-wrap: wrap;">
+      <button id="midiBtn" type="button">Enable MIDI</button>
+      <span id="midiStatus" style="color: var(--muted); font-size: 0.9rem;">MIDI: off</span>
+    </div>
+  </main>
+
+  <script src="handbook-midi.js"></script>
+  <script>
+    const SHARP_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    const FLAT_NAMES = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+    const BLACK_KEY_PCS = new Set([1, 3, 6, 8, 10]);
+
+    function isWhiteKeyMidi(midi) {
+      return !BLACK_KEY_PCS.has(normalizePc(midi));
+    }
+
+    const TONIC_OPTIONS_BY_MODE = {
+      major: [
+        { label: "C", tonic: 0, preferFlats: false },
+        { label: "Db", tonic: 1, preferFlats: true },
+        { label: "D", tonic: 2, preferFlats: false },
+        { label: "Eb", tonic: 3, preferFlats: true },
+        { label: "E", tonic: 4, preferFlats: false },
+        { label: "F", tonic: 5, preferFlats: true },
+        { label: "Gb", tonic: 6, preferFlats: true },
+        { label: "G", tonic: 7, preferFlats: false },
+        { label: "Ab", tonic: 8, preferFlats: true },
+        { label: "A", tonic: 9, preferFlats: false },
+        { label: "Bb", tonic: 10, preferFlats: true },
+        { label: "B", tonic: 11, preferFlats: false }
+      ],
+      minor: [
+        { label: "C", tonic: 0, preferFlats: true },
+        { label: "C#", tonic: 1, preferFlats: false },
+        { label: "D", tonic: 2, preferFlats: true },
+        { label: "Eb", tonic: 3, preferFlats: true },
+        { label: "E", tonic: 4, preferFlats: false },
+        { label: "F", tonic: 5, preferFlats: true },
+        { label: "F#", tonic: 6, preferFlats: false },
+        { label: "G", tonic: 7, preferFlats: true },
+        { label: "G#", tonic: 8, preferFlats: false },
+        { label: "A", tonic: 9, preferFlats: true },
+        { label: "Bb", tonic: 10, preferFlats: true },
+        { label: "B", tonic: 11, preferFlats: false }
+      ]
+    };
+
+    /** @type {{ midi: number, pc: number, black: boolean, whiteIndex: number, id: string }[]} */
+    let activeKeyboardNotes = [];
+
+    const WHITE_WIDTH = 70;
+    const BLACK_WIDTH = 44;
+    const KEYBOARD_HEIGHT = 240;
+    const CAN_HOVER = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const PAIR_COLORS = {
+      "4to3": { tension: "#16a34a", resolution: "#86efac" },
+      "7to8": { tension: "#2563eb", resolution: "#93c5fd" },
+      "2to1": { tension: "#d97706", resolution: "#fdba74" },
+      "2to3": { tension: "#d97706", resolution: "#fed7aa" },
+      "6to5": { tension: "#9333ea", resolution: "#d8b4fe" }
+    };
+
+    const keySelect = document.getElementById("keySelect");
+    const modeSelect = document.getElementById("modeSelect");
+    const midiBtn = document.getElementById("midiBtn");
+    const midiStatus = document.getElementById("midiStatus");
+    const keyboard = document.getElementById("keyboard");
+    const arrowLayer = document.getElementById("arrowLayer");
+    const info = document.getElementById("info");
+    const keyElements = new Map();
+    const keyboardWrap = document.querySelector(".keyboard-wrap");
+    let pinnedUnstableIndex = null;
+
+    function pcName(pc, preferFlats) {
+      const names = preferFlats ? FLAT_NAMES : SHARP_NAMES;
+      return names[(pc + 12) % 12];
+    }
+
+    function getContextualPreferFlats(selected, mode) {
+      return selected.preferFlats;
+    }
+
+    function normalizePc(pc) {
+      return (pc + 12) % 12;
+    }
+
+    /** Major diatonic or harmonic minor pitch classes (same basis as the scale-labels experiment). */
+    function scalePitchClassSet(tonicPc, isMinor) {
+      const offsets = isMinor ? [0, 2, 3, 5, 7, 8, 11] : [0, 2, 4, 5, 7, 9, 11];
+      return new Set(offsets.map((o) => normalizePc(tonicPc + o)));
+    }
+
+    function midiOctaveDigit(midi) {
+      return Math.floor(midi / 12) - 1;
+    }
+
+    function buildKeyboardNotes(midiLo, midiHi) {
+      const keys = [];
+      let whiteRun = 0;
+      for (let m = midiLo; m <= midiHi; m++) {
+        const pc = normalizePc(m);
+        const black = BLACK_KEY_PCS.has(pc);
+        const base = pcName(pc, false).replace(/\d/g, "");
+        const id = `${base}${midiOctaveDigit(m)}`;
+        if (!black) {
+          keys.push({ midi: m, pc, black: false, whiteIndex: whiteRun, id });
+          whiteRun++;
+        } else {
+          keys.push({ midi: m, pc, black: true, whiteIndex: whiteRun - 1, id });
+        }
+      }
+      return keys;
+    }
+
+    function closestTargetIndexLeft(notes, fromIndex, targetPc) {
+      const t = normalizePc(targetPc);
+      for (let j = fromIndex - 1; j >= 0; j--) {
+        if (notes[j].pc === t) return j;
+      }
+      return null;
+    }
+
+    function closestTargetIndexRight(notes, fromIndex, targetPc) {
+      const t = normalizePc(targetPc);
+      for (let j = fromIndex + 1; j < notes.length; j++) {
+        if (notes[j].pc === t) return j;
+      }
+      return null;
+    }
+
+    /** Rightmost source index whose closest matching target is strictly to the left (down on keyboard). */
+    function pickSourceDownTowards(notes, sourcePc, targetPc) {
+      const s = normalizePc(sourcePc);
+      let bestI = null;
+      for (let i = 0; i < notes.length; i++) {
+        if (notes[i].pc !== s) continue;
+        const j = closestTargetIndexLeft(notes, i, targetPc);
+        if (j !== null && (bestI === null || i > bestI)) bestI = i;
+      }
+      return bestI;
+    }
+
+    /** Leftmost source index whose closest matching target is strictly to the right (up on keyboard). */
+    function pickSourceUpTowards(notes, sourcePc, targetPc) {
+      const s = normalizePc(sourcePc);
+      let bestI = null;
+      for (let i = 0; i < notes.length; i++) {
+        if (notes[i].pc !== s) continue;
+        const j = closestTargetIndexRight(notes, i, targetPc);
+        if (j !== null && (bestI === null || i < bestI)) bestI = i;
+      }
+      return bestI;
+    }
+
+    function tryTendencyLayout(notes, tonic, isMinor) {
+      const degree2 = (tonic + 2) % 12;
+      const degree4 = (tonic + 5) % 12;
+      const degree5 = (tonic + 7) % 12;
+      const degree3 = (tonic + (isMinor ? 3 : 4)) % 12;
+      const degree6 = (tonic + (isMinor ? 8 : 9)) % 12;
+      const degree7 = (tonic + 11) % 12;
+
+      const idx4 = pickSourceDownTowards(notes, degree4, degree3);
+      const idx6 = pickSourceDownTowards(notes, degree6, degree5);
+      const idx7 = pickSourceUpTowards(notes, degree7, tonic);
+      const idx2down = pickSourceDownTowards(notes, degree2, tonic);
+      const idx2up = pickSourceUpTowards(notes, degree2, degree3);
+
+      if (idx4 == null || idx6 == null || idx7 == null || idx2down == null || idx2up == null) return null;
+
+      const idx3 = closestTargetIndexLeft(notes, idx4, degree3);
+      const idx5 = closestTargetIndexLeft(notes, idx6, degree5);
+      const idx1From7 = closestTargetIndexRight(notes, idx7, tonic);
+      const idx1From2 = closestTargetIndexLeft(notes, idx2down, tonic);
+      const idx3From2 = closestTargetIndexRight(notes, idx2up, degree3);
+
+      if (idx3 == null || idx5 == null || idx1From7 == null || idx1From2 == null || idx3From2 == null) {
+        return null;
+      }
+
+      return {
+        notes,
+        idx2down,
+        idx2up,
+        idx2same: idx2down === idx2up,
+        idx4,
+        idx3,
+        idx6,
+        idx5,
+        idx7,
+        idx1From7,
+        idx1From2,
+        idx3From2,
+        degree2,
+        degree3,
+        degree4,
+        degree5,
+        degree6,
+        degree7
+      };
+    }
+
+    /**
+     * Smallest chromatic span (fewest keys) where every tendency has a correct left/right
+     * resolution on this strip; C-aligned start keeps layout valid. Tie-break: more distinct
+     * tension keys, then narrower pixel width, then lower MIDI range.
+     */
+    function buildTendencyKeyboard(tonic, isMinor) {
+      const S_MIN = 12;
+      const S_MAX = 22;
+      const LO_MIN = 24;
+      const LO_MAX = 72;
+
+      for (let span = S_MIN; span <= S_MAX; span++) {
+        const candidates = [];
+        for (let lo = LO_MIN; lo <= LO_MAX; lo += 12) {
+          if (normalizePc(lo) !== 0) continue;
+          const hi = lo + span - 1;
+          if (hi > 96) continue;
+          if (!isWhiteKeyMidi(hi)) continue;
+          const notes = buildKeyboardNotes(lo, hi);
+          const layout = tryTendencyLayout(notes, tonic, isMinor);
+          if (!layout) continue;
+          const distinct = new Set([layout.idx4, layout.idx6, layout.idx7, layout.idx2down, layout.idx2up]).size;
+          const px = keyboardPixelWidth(notes);
+          candidates.push({ layout, distinct, px, lo });
+        }
+        if (!candidates.length) continue;
+
+        candidates.sort((a, b) => {
+          if (b.distinct !== a.distinct) return b.distinct - a.distinct;
+          if (a.px !== b.px) return a.px - b.px;
+          return a.lo - b.lo;
+        });
+        return candidates[0].layout;
+      }
+
+      const wide = buildKeyboardNotes(24, 96);
+      const fallback = tryTendencyLayout(wide, tonic, isMinor);
+      if (fallback) return fallback;
+      return tryTendencyLayout(buildKeyboardNotes(12, 107), tonic, isMinor);
+    }
+
+    function keyboardPixelWidth(notes) {
+      const maxW = notes.reduce((acc, n) => Math.max(acc, n.whiteIndex), 0);
+      return (maxW + 1) * WHITE_WIDTH;
+    }
+
+    function relabelKeyboard(getNameForKey) {
+      activeKeyboardNotes.forEach((note, index) => {
+        const key = keyElements.get(index);
+        if (!key) return;
+        const label = key.querySelector(".key-label");
+        if (label) label.textContent = getNameForKey(index, note.pc);
+      });
+    }
+
+    function applyKeyLabelEmphasis(tonicPc, isMinor) {
+      const scalePcs = scalePitchClassSet(tonicPc, isMinor);
+      activeKeyboardNotes.forEach((note, index) => {
+        const el = keyElements.get(index);
+        if (!el) return;
+        const label = el.querySelector(".key-label");
+        if (!label) return;
+        const inScale = scalePcs.has(normalizePc(note.pc));
+        label.classList.toggle("key-label-muted", !inScale);
+      });
+    }
+
+    function getTonicOptionsForMode(mode) {
+      return TONIC_OPTIONS_BY_MODE[mode] || TONIC_OPTIONS_BY_MODE.major;
+    }
+
+    function populateKeySelect() {
+      const mode = modeSelect.value;
+      const tonicOptions = getTonicOptionsForMode(mode);
+      const previousValue = keySelect.value;
+      keySelect.innerHTML = "";
+
+      tonicOptions.forEach((keyOption) => {
+        const option = document.createElement("option");
+        option.value = String(keyOption.tonic);
+        option.textContent = keyOption.label;
+        keySelect.appendChild(option);
+      });
+
+      const hasPrevious = tonicOptions.some((option) => String(option.tonic) === previousValue);
+      keySelect.value = hasPrevious ? previousValue : String(tonicOptions[0].tonic);
+    }
+
+    function renderKeyboard() {
+      keyboard.querySelectorAll(".key").forEach((el) => el.remove());
+      keyElements.clear();
+
+      activeKeyboardNotes.forEach((note, index) => {
+        const key = document.createElement("div");
+        key.className = `key ${note.black ? "black" : "white"}`;
+        key.dataset.index = String(index);
+        key.dataset.pc = String(note.pc);
+        key.dataset.midi = String(note.midi);
+
+        if (note.black) {
+          key.style.left = `${(note.whiteIndex + 1) * WHITE_WIDTH - BLACK_WIDTH / 2}px`;
+        } else {
+          key.style.left = `${note.whiteIndex * WHITE_WIDTH}px`;
+        }
+
+        const labelEl = document.createElement("span");
+        labelEl.className = "key-label";
+        labelEl.textContent = note.id.replace(/[0-9]/g, "");
+        key.appendChild(labelEl);
+        keyboard.appendChild(key);
+        keyElements.set(index, key);
+      });
+
+      const width = keyboardPixelWidth(activeKeyboardNotes);
+      keyboard.style.width = `${width}px`;
+      keyboard.style.height = `${KEYBOARD_HEIGHT}px`;
+      arrowLayer.setAttribute("viewBox", `0 0 ${width} ${KEYBOARD_HEIGHT}`);
+      fitKeyboardScale();
+    }
+
+    function fitKeyboardScale() {
+      if (!keyboardWrap || !activeKeyboardNotes.length) return;
+      const intrinsicW = keyboardPixelWidth(activeKeyboardNotes);
+      const available = keyboardWrap.clientWidth;
+      const scale = available >= intrinsicW ? 1 : available / intrinsicW;
+      keyboard.style.transform = scale < 1 ? `scale(${scale})` : "";
+      keyboard.style.transformOrigin = "top center";
+      keyboardWrap.style.height = `${KEYBOARD_HEIGHT * scale}px`;
+    }
+
+    function getKeyCenter(index) {
+      const el = keyElements.get(index);
+      const rect = el.getBoundingClientRect();
+      const parent = keyboard.getBoundingClientRect();
+      return {
+        x: rect.left - parent.left + rect.width / 2,
+        y: rect.top - parent.top + rect.height * 0.32
+      };
+    }
+
+    let currentState = null;
+    const activeMidiNotes = new Set();
+
+    function setHighlightedLabelColor(el) {
+      const lab = el.querySelector(".key-label");
+      if (lab) lab.style.color = "#111111";
+      else el.style.color = "#111111";
+    }
+
+    function paintKey(index, color) {
+      const el = keyElements.get(index);
+      if (!el) return;
+      el.style.background = color;
+      el.style.backgroundImage = "";
+      setHighlightedLabelColor(el);
+      el.style.boxShadow = "inset 0 0 0 2px rgba(0,0,0,0.18)";
+      el.style.cursor = "default";
+    }
+
+    /** One key carrying multiple tendency roles: blend so every role stays visible. */
+    function paintTensionKey(index, colors) {
+      const el = keyElements.get(index);
+      if (!el) return;
+      const uniq = [...new Set(colors)];
+      if (uniq.length === 1) {
+        el.style.background = uniq[0];
+        el.style.backgroundImage = "";
+      } else if (uniq.length === 2) {
+        el.style.background = `linear-gradient(135deg, ${uniq[0]} 0%, ${uniq[0]} 48%, ${uniq[1]} 52%, ${uniq[1]} 100%)`;
+      } else {
+        const stops = uniq.map((c, i) => `${c} ${(100 * i) / (uniq.length - 1)}%`).join(", ");
+        el.style.background = `linear-gradient(135deg, ${stops})`;
+      }
+      setHighlightedLabelColor(el);
+      el.style.boxShadow = "inset 0 0 0 2px rgba(0,0,0,0.18)";
+      el.style.cursor = "pointer";
+    }
+
+    function drawArrow(fromIndex, toIndex, label, options = {}) {
+      const from = getKeyCenter(fromIndex);
+      const to = getKeyCenter(toIndex);
+      const archHeight = options.archHeight ?? 40;
+      const labelOffset = options.labelOffset ?? 0;
+      const controlY = Math.max(20, Math.min(from.y, to.y) - archHeight);
+
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", `M ${from.x} ${from.y} Q ${(from.x + to.x) / 2} ${controlY} ${to.x} ${to.y}`);
+      path.setAttribute("fill", "none");
+      path.setAttribute("stroke", "#111111");
+      path.setAttribute("stroke-width", "2.5");
+      path.setAttribute("stroke-linecap", "round");
+      path.setAttribute("marker-end", "url(#arrowheadBlack)");
+      arrowLayer.appendChild(path);
+
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", String((from.x + to.x) / 2));
+      text.setAttribute("y", String(controlY - 6 + labelOffset));
+      text.setAttribute("fill", "#111111");
+      text.setAttribute("font-size", "12");
+      text.setAttribute("font-weight", "700");
+      text.setAttribute("text-anchor", "middle");
+      text.textContent = label;
+      arrowLayer.appendChild(text);
+    }
+
+    function clearHighlightsAndArrows() {
+      keyElements.forEach((el) => {
+        el.style.background = "";
+        el.style.backgroundImage = "";
+        el.style.color = "";
+        el.style.boxShadow = "";
+        el.style.cursor = "";
+        const lab = el.querySelector(".key-label");
+        if (lab) lab.style.color = "";
+      });
+
+      const arrows = arrowLayer.querySelectorAll("path, text");
+      arrows.forEach((el) => el.remove());
+    }
+
+    function clearHoverHandlers() {
+      keyElements.forEach((el) => {
+        el.onmouseenter = null;
+        el.onmouseleave = null;
+        el.onclick = null;
+      });
+    }
+
+    function renderUnstableOnly() {
+      if (!currentState) return;
+      clearHighlightsAndArrows();
+
+      const tensionByIndex = new Map();
+      currentState.unstable.forEach((entry) => {
+        if (!tensionByIndex.has(entry.index)) tensionByIndex.set(entry.index, []);
+        tensionByIndex.get(entry.index).push(entry.color);
+      });
+      tensionByIndex.forEach((colors, index) => {
+        paintTensionKey(index, colors);
+      });
+
+      info.textContent = CAN_HOVER
+        ? `In ${currentState.keyName} ${currentState.modeName}, hover a colored unstable note to reveal its resolution.`
+        : `In ${currentState.keyName} ${currentState.modeName}, tap a colored unstable note to reveal its resolution.`;
+    }
+
+    function showResolutionsFor(sourceIndex) {
+      if (!currentState) return;
+      renderUnstableOnly();
+
+      const matches = currentState.mappings.filter((m) => m.sourceIndex === sourceIndex);
+      matches.forEach((mapping) => {
+        paintKey(mapping.targetIndex, mapping.resolutionColor);
+        drawArrow(mapping.sourceIndex, mapping.targetIndex, mapping.label, mapping.arrow);
+      });
+
+      if (matches.length) {
+        const message = matches
+          .map((mapping) => `${mapping.sourceName} -> ${mapping.targetName}`)
+          .join(" and ");
+        info.textContent = `In ${currentState.keyName} ${currentState.modeName}: ${message}.`;
+      }
+    }
+
+    function showResolutionsForSources(sourceIndices) {
+      if (!currentState) return;
+      renderUnstableOnly();
+
+      const uniqueSources = [...new Set(sourceIndices)];
+      const allMatches = currentState.mappings.filter((m) => uniqueSources.includes(m.sourceIndex));
+      allMatches.forEach((mapping) => {
+        paintKey(mapping.targetIndex, mapping.resolutionColor);
+        drawArrow(mapping.sourceIndex, mapping.targetIndex, mapping.label, mapping.arrow);
+      });
+
+      if (allMatches.length) {
+        const message = allMatches
+          .map((mapping) => `${mapping.sourceName} -> ${mapping.targetName}`)
+          .join(", ");
+        info.textContent = `In ${currentState.keyName} ${currentState.modeName}: ${message}.`;
+      }
+    }
+
+    function showResolutionsByPitchClass(midiNote) {
+      if (!currentState) return null;
+      const pc = normalizePc(midiNote);
+      let idx = activeKeyboardNotes.findIndex((n) => n.midi === midiNote);
+      if (idx < 0) {
+        const unstable = currentState.unstable.find(
+          (entry) => activeKeyboardNotes[entry.index]?.pc === pc
+        );
+        return unstable ? unstable.index : null;
+      }
+      const hit = currentState.unstable.some((entry) => entry.index === idx);
+      if (!hit) return null;
+      return idx;
+    }
+
+    function bindHoverHandlers() {
+      if (!currentState) return;
+      clearHoverHandlers();
+      pinnedUnstableIndex = null;
+      const unstableIndices = [...new Set(currentState.unstable.map((u) => u.index))];
+      unstableIndices.forEach((idx) => {
+        const el = keyElements.get(idx);
+        if (!el) return;
+        if (CAN_HOVER) {
+          el.onmouseenter = () => showResolutionsFor(idx);
+          el.onmouseleave = () => renderUnstableOnly();
+        } else {
+          el.onclick = (e) => {
+            e.stopPropagation();
+            if (pinnedUnstableIndex === idx) {
+              pinnedUnstableIndex = null;
+              renderUnstableOnly();
+            } else {
+              pinnedUnstableIndex = idx;
+              showResolutionsFor(idx);
+            }
+          };
+        }
+      });
+    }
+
+    function updateView() {
+      activeMidiNotes.clear();
+      const tonicOptions = getTonicOptionsForMode(modeSelect.value);
+      const selected = tonicOptions.find((k) => String(k.tonic) === keySelect.value) || tonicOptions[0];
+      const tonic = selected.tonic;
+      const mode = modeSelect.value;
+      const isMinor = mode === "minor";
+      const contextualPreferFlats = getContextualPreferFlats(selected, mode);
+
+      const layout = buildTendencyKeyboard(tonic, isMinor);
+      activeKeyboardNotes = layout.notes;
+      renderKeyboard();
+
+      const {
+        idx2down,
+        idx2up,
+        idx2same,
+        idx4,
+        idx3,
+        idx6,
+        idx5,
+        idx7,
+        idx1From7,
+        idx1From2,
+        idx3From2,
+        degree7
+      } = layout;
+
+      const raisedSixPc = (tonic + 9) % 12;
+
+      const harmonicLeadingToneLabel = pcName(degree7, false);
+
+      const getNameForKey = (index, pc) => {
+        const normalized = normalizePc(pc);
+        if (isMinor && normalized === degree7) {
+          return harmonicLeadingToneLabel;
+        }
+        if (isMinor && normalized === raisedSixPc && BLACK_KEY_PCS.has(normalized)) {
+          return pcName(normalized, contextualPreferFlats);
+        }
+        return pcName(normalized, contextualPreferFlats);
+      };
+
+      const nameAtIndex = (idx) => {
+        const note = activeKeyboardNotes[idx];
+        return note ? getNameForKey(idx, note.pc) : "";
+      };
+
+      relabelKeyboard(getNameForKey);
+      applyKeyLabelEmphasis(tonic, isMinor);
+
+      const unstable2 = idx2same
+        ? [{ index: idx2down, color: PAIR_COLORS["2to1"].tension }]
+        : [
+            { index: idx2down, color: PAIR_COLORS["2to1"].tension },
+            { index: idx2up, color: PAIR_COLORS["2to1"].tension }
+          ];
+
+      currentState = {
+        selected,
+        keyName: selected.label,
+        modeName: isMinor ? "minor" : "major",
+        unstable: [
+          { index: idx4, color: PAIR_COLORS["4to3"].tension },
+          { index: idx7, color: PAIR_COLORS["7to8"].tension },
+          { index: idx6, color: PAIR_COLORS["6to5"].tension },
+          ...unstable2
+        ],
+        mappings: [
+          {
+            sourceIndex: idx4,
+            targetIndex: idx3,
+            sourceName: nameAtIndex(idx4),
+            targetName: nameAtIndex(idx3),
+            resolutionColor: PAIR_COLORS["4to3"].resolution,
+            label: isMinor ? "4 -> b3" : "4 -> 3",
+            arrow: { archHeight: 46, labelOffset: 2 }
+          },
+          {
+            sourceIndex: idx7,
+            targetIndex: idx1From7,
+            sourceName: nameAtIndex(idx7),
+            targetName: nameAtIndex(idx1From7),
+            resolutionColor: PAIR_COLORS["7to8"].resolution,
+            label: "7 -> 8",
+            arrow: { archHeight: 58, labelOffset: -2 }
+          },
+          {
+            sourceIndex: idx6,
+            targetIndex: idx5,
+            sourceName: nameAtIndex(idx6),
+            targetName: nameAtIndex(idx5),
+            resolutionColor: PAIR_COLORS["6to5"].resolution,
+            label: isMinor ? "b6 -> 5" : "6 -> 5",
+            arrow: { archHeight: 34, labelOffset: 6 }
+          },
+          {
+            sourceIndex: idx2down,
+            targetIndex: idx1From2,
+            sourceName: nameAtIndex(idx2down),
+            targetName: nameAtIndex(idx1From2),
+            resolutionColor: PAIR_COLORS["2to1"].resolution,
+            label: "2 -> 1",
+            arrow: { archHeight: 52, labelOffset: -8 }
+          },
+          {
+            sourceIndex: idx2up,
+            targetIndex: idx3From2,
+            sourceName: nameAtIndex(idx2up),
+            targetName: nameAtIndex(idx3From2),
+            resolutionColor: PAIR_COLORS["2to3"].resolution,
+            label: isMinor ? "2 -> b3" : "2 -> 3",
+            arrow: { archHeight: 28, labelOffset: 12 }
+          }
+        ]
+      };
+
+      renderUnstableOnly();
+      bindHoverHandlers();
+    }
+
+    function handleMidiMessage(event) {
+      const data = event.data;
+      if (!data || data.length < 3) return;
+      const status = data[0] & 0xf0;
+      const noteNumber = data[1];
+      const velocity = data[2];
+
+      // Note On (with velocity) reveals resolutions like hover.
+      if (status === 0x90 && velocity > 0) {
+        activeMidiNotes.add(noteNumber);
+        const unstableSources = [...activeMidiNotes]
+          .map((note) => showResolutionsByPitchClass(note))
+          .filter((idx) => idx != null);
+        if (unstableSources.length) {
+          showResolutionsForSources(unstableSources);
+        } else {
+          renderUnstableOnly();
+        }
+      }
+
+      // Note Off (or Note On velocity 0) returns to unstable-only view.
+      if (status === 0x80 || (status === 0x90 && velocity === 0)) {
+        activeMidiNotes.delete(noteNumber);
+        const unstableSources = [...activeMidiNotes]
+          .map((note) => showResolutionsByPitchClass(note))
+          .filter((idx) => idx != null);
+        if (unstableSources.length) {
+          showResolutionsForSources(unstableSources);
+        } else {
+          renderUnstableOnly();
+        }
+      }
+    }
+
+    populateKeySelect();
+    keySelect.value = "0";
+    keySelect.addEventListener("change", updateView);
+    modeSelect.addEventListener("change", () => {
+      populateKeySelect();
+      updateView();
+    });
+    HandbookMidi.initUi(midiBtn, midiStatus);
+    HandbookMidi.subscribe(handleMidiMessage);
+    window.addEventListener("resize", fitKeyboardScale);
+
+    if (!CAN_HOVER && keyboardWrap) {
+      keyboardWrap.addEventListener("click", (e) => {
+        if (e.target.closest(".key")) return;
+        pinnedUnstableIndex = null;
+        renderUnstableOnly();
+      });
+    }
+
+    updateView();
+
+    /** GitHub Pages often uses index.html; locally it may be music-theory-handbook.html */
+    (function resolveMenuBackLink() {
+      const link = document.getElementById("menu-back");
+      if (!link || location.protocol === "file:") return;
+      (async function () {
+        for (const name of ["index.html", "music-theory-handbook.html"]) {
+          try {
+            const r = await fetch(name, { method: "HEAD" });
+            if (r.ok) {
+              link.href = name;
+              return;
+            }
+          } catch (_) {}
+        }
+      })();
+    })();
+  </script>
+</body>
+</html>
