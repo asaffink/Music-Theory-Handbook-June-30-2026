@@ -8,8 +8,20 @@
     rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Noto+Music&display=swap"
   />
-  <link rel="stylesheet" href="handbook-responsive.css" />
+  <link rel="stylesheet" href="handbook-responsive.css?v=20260630" />
   <style>
+    /* Safeguard: app must stay visible on phones (overrides stale cached CSS) */
+    @media (hover: none) and (pointer: coarse) and (orientation: portrait) {
+      main.app {
+        display: block !important;
+        visibility: visible !important;
+      }
+
+      body.chords-active main.app {
+        display: flex !important;
+        flex-direction: column;
+      }
+    }
     :root {
       --accent-dim: #0ea5e9;
       --highlight-major: #fbbf24;

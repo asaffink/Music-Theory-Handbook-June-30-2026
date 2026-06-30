@@ -4,8 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Music Theory Handbook — Tendency Tones</title>
-  <link rel="stylesheet" href="handbook-responsive.css" />
+  <link rel="stylesheet" href="handbook-responsive.css?v=20260630" />
   <style>
+    /* Safeguard: app must stay visible on phones (overrides stale cached CSS) */
+    @media (hover: none) and (pointer: coarse) and (orientation: portrait) {
+      main.app {
+        display: block !important;
+        visibility: visible !important;
+      }
+    }
     :root {
       --white-key: #f8fafc;
       --black-key: #0f172a;

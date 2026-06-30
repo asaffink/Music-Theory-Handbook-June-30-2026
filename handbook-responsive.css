@@ -168,6 +168,21 @@ button.back-btn {
   }
 }
 
+/* Phones in portrait: always show the app */
+@media (hover: none) and (pointer: coarse) and (orientation: portrait) {
+  main.app,
+  .app {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  body.chords-active main.app,
+  body.chords-active .app {
+    display: flex !important;
+    flex-direction: column;
+  }
+}
+
 /* —— Mobile landscape: use full screen —— */
 @media (hover: none) and (pointer: coarse) and (orientation: landscape) {
   body {
