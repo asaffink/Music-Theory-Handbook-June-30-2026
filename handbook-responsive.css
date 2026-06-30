@@ -138,11 +138,6 @@ button.back-btn {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-
-  .rotate-prompt-icon {
-    animation: none;
-    transform: rotate(-90deg);
-  }
 }
 
 /* Tablet: slightly roomier menu */
@@ -170,65 +165,6 @@ button.back-btn {
     margin-top: 8px;
     min-height: 36px;
     font-size: 0.92rem;
-  }
-}
-
-/* —— Mobile portrait: prompt landscape —— */
-.rotate-prompt {
-  display: none;
-}
-
-.rotate-prompt-icon {
-  color: var(--accent);
-  line-height: 1;
-  animation: rotate-hint 2.4s ease-in-out infinite;
-}
-
-.rotate-prompt-icon svg {
-  display: block;
-}
-
-.rotate-prompt-title {
-  margin: 0;
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.rotate-prompt-text {
-  margin: 0;
-  max-width: 280px;
-  color: var(--muted);
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-@keyframes rotate-hint {
-  0%, 100% { transform: rotate(-90deg); }
-  50% { transform: rotate(0deg); }
-}
-
-@media (hover: none) and (pointer: coarse) and (orientation: portrait) and (max-width: 768px) {
-  .rotate-prompt {
-    display: flex;
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 18px;
-    padding:
-      max(24px, env(safe-area-inset-top))
-      max(20px, env(safe-area-inset-right))
-      max(24px, env(safe-area-inset-bottom))
-      max(20px, env(safe-area-inset-left));
-    background: radial-gradient(circle at top, #1e293b, var(--bg));
-    text-align: center;
-  }
-
-  .app {
-    display: none !important;
   }
 }
 
@@ -272,5 +208,36 @@ button.back-btn {
 
   .menu-card p {
     font-size: 0.88rem;
+  }
+
+  /* Menu: three modules in a row */
+  #viewMenu .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: none;
+    gap: 8px;
+  }
+
+  #viewMenu .menu-card {
+    padding: 10px 8px;
+    text-align: center;
+  }
+
+  #viewMenu .menu-card h2 {
+    font-size: 0.95rem;
+    margin-bottom: 0;
+  }
+
+  #viewMenu .menu-card p {
+    display: none;
+  }
+
+  #viewMenu .sub {
+    display: none;
+  }
+
+  #viewMenu > h1 {
+    font-size: 1.15rem;
+    margin-bottom: 6px;
   }
 }

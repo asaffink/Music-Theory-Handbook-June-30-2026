@@ -453,6 +453,14 @@
 
     body.chords-active .app {
       padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    body.chords-active #viewChords {
+      flex: 1;
+      min-height: 0;
     }
 
     body.chords-active .global-midi {
@@ -575,21 +583,6 @@
       }
     }
 
-    /* Landscape phones: compact circle + chords */
-    @media (max-height: 520px) and (orientation: landscape) {
-      #viewCircle .sub {
-        display: none;
-      }
-
-      #viewCircle .mode-bar {
-        margin-bottom: 8px;
-      }
-
-      #viewCircle .info {
-        min-height: 32px;
-      }
-    }
-
     @media (max-width: 380px) {
       .mode-bar {
         gap: 6px;
@@ -605,89 +598,140 @@
       }
     }
 
-    /* Landscape phones: side-by-side chords with a taller staff */
-    @media (max-height: 520px) and (orientation: landscape) {
-      body.chords-active .app {
-        padding: 8px 12px;
+    /* Mobile touch landscape: chords side-by-side, compact controls */
+    @media (hover: none) and (pointer: coarse) and (orientation: landscape) {
+      body.chords-active {
+        overflow: hidden;
       }
 
-      #viewChords {
-        max-height: calc(100dvh - 12px);
-        gap: 4px;
+      body.chords-active .app {
+        height: 100dvh;
+        max-height: 100dvh;
+        padding: 4px 8px;
+        overflow: hidden;
+      }
+
+      body.chords-active #viewChords {
+        flex: 1;
+        min-height: 0;
+        max-height: none;
+        overflow: hidden;
       }
 
       #viewChords .app-header {
-        margin-bottom: 0;
+        flex-shrink: 0;
+        margin-bottom: 2px;
       }
 
       #viewChords .app-header h1 {
-        font-size: 1.05rem;
+        font-size: 1rem;
       }
 
       .chord-layout {
-        grid-template-columns: minmax(170px, 44%) minmax(190px, 1fr);
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
         grid-template-rows: 1fr;
-        gap: 10px;
+        flex: 1;
+        min-height: 0;
+        gap: 8px;
       }
 
       .chord-controls {
         max-height: none;
+        height: 100%;
         overflow-y: auto;
-        gap: 10px;
+        gap: 6px;
+        padding-right: 2px;
+        -webkit-overflow-scrolling: touch;
       }
 
       .chord-group label {
-        margin-bottom: 4px;
+        font-size: 0.68rem;
+        margin-bottom: 2px;
       }
 
-      .chord-opt-root {
-        min-height: 36px;
-        padding: 6px 4px;
-        font-size: 0.88rem;
+      .chord-group-hint {
+        display: none;
       }
 
+      .chord-root-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 4px;
+      }
+
+      .chord-option-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+      }
+
+      .chord-option-grid-ext {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .chord-opt,
+      .chord-opt-root,
       .chord-opt-lg {
-        min-height: 40px;
-        font-size: 0.85rem;
+        min-height: 32px !important;
+        padding: 4px 3px;
+        font-size: 0.78rem;
+      }
+
+      .chord-option-grid .chord-opt-lg {
+        font-size: 0.72rem;
+        line-height: 1.1;
+        padding: 4px 2px;
       }
 
       .chord-staff-panel {
-        padding: 8px 10px 10px;
+        padding: 6px 8px;
+        min-height: 0;
+        height: 100%;
       }
 
       .chord-symbol-display {
-        font-size: 1.15rem;
-        margin-bottom: 4px;
+        font-size: 1rem;
+        margin-bottom: 2px;
+        min-height: 1em;
+      }
+
+      .chord-staff-mount {
+        flex: 1;
+        min-height: 0;
       }
 
       .chord-staff-svg {
-        max-height: min(calc(100dvh - 72px), 280px);
+        max-height: 100%;
       }
 
       body.chords-active .global-midi {
-        margin-top: 4px;
+        flex-shrink: 0;
+        margin-top: 2px;
+        padding-top: 4px;
       }
 
       body.chords-active .global-midi .aux {
-        padding: 5px 8px;
-        font-size: 0.8rem;
+        min-height: 32px;
+        padding: 4px 8px;
+        font-size: 0.78rem;
+      }
+
+      /* Circle: compact header row */
+      #viewCircle .sub {
+        display: none;
+      }
+
+      #viewCircle .mode-bar {
+        margin-bottom: 6px;
+      }
+
+      #viewCircle .info {
+        min-height: 28px;
+        font-size: 0.85rem;
+        margin-top: 6px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="rotate-prompt" role="dialog" aria-modal="true" aria-labelledby="rotate-prompt-title">
-    <div class="rotate-prompt-icon" aria-hidden="true">
-      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="16" y="8" width="40" height="56" rx="6" stroke="currentColor" stroke-width="3"/>
-        <path d="M36 20v16M28 28h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-        <path d="M52 14l4 4-4 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </div>
-    <h2 id="rotate-prompt-title" class="rotate-prompt-title">Rotate your device</h2>
-    <p class="rotate-prompt-text">Please turn your phone sideways (landscape) for the best experience.</p>
-  </div>
-
   <main class="app">
     <!-- Main menu -->
     <section id="viewMenu">
